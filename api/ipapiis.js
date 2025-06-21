@@ -21,7 +21,10 @@ export default (req, res) => {
         return res.status(400).json({ error: 'Invalid IP address' });
     }
 
-    const keys = (process.env.IPAPIIS_API_KEY).split(',');
+    const keys = (process.env.IPAPIIS_API_KEY || '').split(',').filter(Boolean);
+    if (keys.length === 0) {
+        return res.status(500).json({ error: 'API key is missing' });
+    }
     const key = keys[Math.floor(Math.random() * keys.length)];
     const url = `https://api.ipapi.is?q=${ipAddress}&key=${key}`;
 
